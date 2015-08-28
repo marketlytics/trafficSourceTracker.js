@@ -39,7 +39,6 @@
 	var cookieStrKey = 'traffic_src';
 
 	var setCookie = function() {
-		console.log('im called');
 		for(var i = 0; i < parameters.length; i++) {
 			var value = utils.getParameterByName(document.location.href, parameters[i]);
 			cookieObj[parameters[i]] = value;
