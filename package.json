@@ -1,0 +1,13 @@
+{
+  "name": "metricon-traffic-source-script",
+  "version": "0.0.0",
+  "main": "script.js",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
