@@ -17,7 +17,11 @@
 			}
 
 			if(cookieObj.utm_source === '') {
-				return 'none';
+				return '';
+			}
+
+			if(cookieObj.utm_source === 'direct') {
+				return '(none)';
 			}
 
 			if(this.isOrganic(cookieObj.utm_source)) {
