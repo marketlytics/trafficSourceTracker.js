@@ -1,3 +1,9 @@
+//TODO: get keyword from document.referrer
+//TODO: skip direct if cookie is present
+//TODO: mendatory utm parameters source, medium and campaign (goto )
+//TODO: add landing page
+//TODO: improve logic for detecting whether the source is organic or not .... for e.g check for 'q' param with google.com to ensure that the user came from google's search engine and not from the google forums
+
 (function (window, document) {
 	var utils = {
 		getParameterByName: function(url, name) {
