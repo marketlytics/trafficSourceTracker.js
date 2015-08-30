@@ -1,26 +1,22 @@
-//TODO: get keyword from document.referrer
-//TODO: skip direct if cookie is present
-//TODO: mendatory utm parameters source, medium and campaign (goto )
-//TODO: add landing page
-//TODO: improve logic for detecting whether the source is organic or not .... for e.g check for 'q' param with google.com to ensure that the user came from google's search engine and not from the google forums
-
-//inject global function for cookie retrieval
-window.getTrafficSrcCookie = function()
-{
-	var cookies = document.cookie.split(';');
-	var cookieObj = cookies.filter(function(cookie) {
-		return cookie.indexOf(cookieStrKey) >= 0;
-	})[0];
-	if(cookieObj)
-	{
-		cookieObj = cookieObj.substring(cookieObj.indexOf('=') + 1, cookieObj.length);
-		return JSON.parse(cookieObj);
-	}
-	return null;
-};
-
 (function (window, document)
 {
+	
+	var cookieStrKey = 'traffic_src';
+	
+	//inject global function for cookie retrieval
+	window.getTrafficSrcCookie = function()
+	{
+		var cookies = document.cookie.split(';');
+		var cookieObj = cookies.filter(function(cookie) {
+			return cookie.indexOf(cookieStrKey) >= 0;
+		})[0];
+		if(cookieObj)
+		{
+			cookieObj = cookieObj.substring(cookieObj.indexOf('=') + 1, cookieObj.length);
+			return JSON.parse(cookieObj);
+		}
+		return null;
+	};
 
 	var utils = {
 		getParameterByName: function(url, name)
@@ -31,9 +27,29 @@ window.getTrafficSrcCookie = function()
 			return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 		},
 
-		isOrganic: function(url)
-		{
-			return url.indexOf('bing.com') >= 0 || url.indexOf('yahoo.com') >= 0 || url.indexOf('google.com') >= 0;
+		getKeywords: function(url)
+		{	
+			if(url === '' || url === 'direct') return '';
+			
+			var searchEngines = 'daum:q eniro:search_word naver:query pchome:q images.google:q google:q yahoo:p yahoo:q msn:q bing:q aol:query aol:q lycos:q lycos:query ask:q cnn:query virgilio:qs baidu:wd baidu:word alice:qs yandex:text najdi:q seznam:q rakuten:qt biglobe:q goo.ne:MT search.smt.docomo:MT onet:qt onet:q kvasir:q terra:query rambler:query conduit:q babylon:q search-results:q avg:q comcast:q incredimail:q startsiden:q go.mail.ru:q centrum.cz:q 360.cn:q sogou:query tut.by:query globo:q ukr:q so.com:q haosou.com:q auone:q'.split(' ');
+			for(var i = 0; i < searchEngines.length; i++)
+			{
+				var val = searchEngines[i].split(':');
+				var name = val[0];
+				var queryParam = val[1];
+				if(url.indexOf(name) >= 0 && this.getParameterByName(url, queryParam) !== '') {
+					return this.getParameterByName(url, queryParam);
+				}
+			}
+			
+			var google = new RegExp('^https?:\/\/(www\.)?google(\.com?)?(\.[a-z]{2}t?)?\/?$', 'i');
+			var yahoo = new RegExp('^https?:\/\/(r\.)?search\.yahoo\.com\/?[^?]*$', 'i');
+			var bing = new RegExp('^https?:\/\/(www\.)?bing\.com\/?$', 'i');
+			if(google.test(url) || yahoo.test(url) || bing.test(url)) {
+				return '(not provided)';
+			}
+			
+			return '';
 		},
 
 		getMedium: function(ccokieObj)
@@ -46,7 +62,7 @@ window.getTrafficSrcCookie = function()
 
 			if(cookieObj.utm_source === 'direct') return '(none)';
 
-			if(this.isOrganic(cookieObj.utm_source)) return 'organic';
+			if(cookieObj.utm_term !== '') return 'organic';
 
 			return 'referral';
 		},
@@ -76,8 +92,6 @@ window.getTrafficSrcCookie = function()
 
 	var cookieObj = {};
 
-	var cookieStrKey = 'traffic_src';
-
 	var setCookie = function()
 	{
 		cookieObj.gclid = utils.getParameterByName(document.location.href, 'gclid');
@@ -88,36 +102,30 @@ window.getTrafficSrcCookie = function()
 			if(parameters[i].required && value === '') {
 				ignoreUtmParameters = true;
 				for(var j = 0; j < parameters.length; j++) {
-					cookieObj[parameters[j][key]] = '';
+					cookieObj[parameters[j]['key']] = '';
 				}
 				break;
 			}
-			cookieObj[parameters[i]] = value;
+			cookieObj[parameters[i]['key']] = value;
 		}
 
 		if (cookieObj.gclid !== '' && cookieObj.utm_source === '')
 		{
 			cookieObj.utm_source = 'google';
-			
 		} 
-		else if(ignoreUtmParameters && getTrafficSrcCookie() === null)
+		else if(ignoreUtmParameters)
 		{
-			if(document.referrer.indexOf(document.location.host) >= 0) {
-				return;
-			}
-
-			if(document.referrer !== '') {
-				//parse
-			} else {
-				//utm_source = direct
-			}
-
+			if(document.referrer.indexOf(document.location.host) >= 0) return;
+			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
+			cookieObj.utm_source = document.referrer !== '' ? document.referrer : 'direct';
 		}
-
+		
+		cookieObj.utm_term = cookieObj.utm_term === '' ? utils.getKeywords(cookieObj.utm_source) : cookieObj.utm_term;
 		cookieObj.utm_medium = utils.getMedium(cookieObj);
+		cookieObj.landingPage = document.location.href;
 
-		//save cookie here
-		if(cookieObj.utm_source !== '') {
+		if(cookieObj.utm_source !== '')
+		{
 			var cookieStr = JSON.stringify(cookieObj);
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
 			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1);
