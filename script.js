@@ -122,7 +122,7 @@
 		
 		cookieObj.utm_term = cookieObj.utm_term === '' ? utils.getKeywords(cookieObj.utm_source) : cookieObj.utm_term;
 		cookieObj.utm_medium = utils.getMedium(cookieObj);
-		cookieObj.landingPage = document.location.href;
+		cookieObj.landing_page = document.location.href;
 
 		if(cookieObj.utm_source !== '')
 		{
