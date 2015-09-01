@@ -39,7 +39,7 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.google.com.pk/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('http://www.google.com.pk/');
+		expect(cookieObj.utm_source).to.equal('www.google.com.pk');
 		expect(cookieObj.utm_medium).to.equal('organic');
 		expect(cookieObj.utm_term).to.equal('(not provided)');
 	});
@@ -52,7 +52,7 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.google.com.pk/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('http://www.google.com.pk/');
+		expect(cookieObj.utm_source).to.equal('www.google.com.pk');
 		expect(cookieObj.utm_medium).to.equal('organic');
 		expect(cookieObj.utm_term).to.equal('(not provided)');
 	});
@@ -65,7 +65,7 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.google.com.pk/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('http://www.google.com.pk/');
+		expect(cookieObj.utm_source).to.equal('www.google.com.pk');
 		expect(cookieObj.utm_medium).to.equal('organic');
 		expect(cookieObj.utm_term).to.equal('(not provided)');
 	});

@@ -70,6 +70,16 @@
 		getDateAfterYears: function(years)
 		{
 			return new Date(new Date().getTime() + (years * 365 * 24 * 60 * 60 * 1000));
+		},
+
+		getHostname: function(url)
+		{
+			var re = new RegExp('^(https:\/\/|http:\/\/)?([^\/?:#]+)');
+			var match = re.exec(url)[2];
+			if(match !== null) {
+				return match;
+			}
+			return '';
 		}
 	};
 
@@ -123,6 +133,7 @@
 		cookieObj.utm_term = cookieObj.utm_term === '' ? utils.getKeywords(cookieObj.utm_source) : cookieObj.utm_term;
 		cookieObj.utm_medium = utils.getMedium(cookieObj);
 		cookieObj.landing_page = document.location.href;
+		cookieObj.utm_source = utils.getHostname(cookieObj.utm_source);
 
 		if(cookieObj.utm_source !== '')
 		{
