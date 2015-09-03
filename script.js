@@ -7,9 +7,13 @@
 	window.getTrafficSrcCookie = function()
 	{
 		var cookies = document.cookie.split(';');
-		var cookieObj = cookies.filter(function(cookie) {
-			return cookie.indexOf(cookieStrKey) >= 0;
-		})[0];
+		var cookieObj;
+		for(var i = 0; i < cookies.length; i++) {
+			if(cookies[i].indexOf(cookieStrKey) >= 0) {
+				cookieObj = cookies[i];
+				break;
+			}
+		}
 		if(cookieObj)
 		{
 			cookieObj = cookieObj.substring(cookieObj.indexOf('=') + 1, cookieObj.length);

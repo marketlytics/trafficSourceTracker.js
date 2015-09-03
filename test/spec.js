@@ -85,14 +85,15 @@ describe("Metricon Script", function() {
 
 	it('test 5', function() {
 		document.location = {
-			href: 'http://www.marketlytics.com/?gclid=123213',
-			host: 'marketlytics.com'
+			href: 'http://www.walmart.ca/search/canadian%20spa%20company?gclid=CLGDyL2t1ccCFQVuGwodWuUHtw',
+			host: 'www.walmart.ca'
 		};
 		document.referrer = 'http://www.bing.com/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
 		expect(cookieObj.utm_source).to.equal('google');
 		expect(cookieObj.utm_medium).to.equal('cpc');
+		expect(cookieObj.gclid).to.equal('CLGDyL2t1ccCFQVuGwodWuUHtw');
 	});
 
 	it('test 6 - should not overwrite cookie if referrer is from the same domain', function() {
