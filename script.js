@@ -1,6 +1,5 @@
 (function (window, document)
 {
-	
 	var cookieStrKey = 'traffic_src';
 	
 	//inject global function for cookie retrieval
@@ -148,7 +147,7 @@
 	};
 
 	var loadJSON = function(callback) {
-		if(typeof JSON.stringify !== 'undefined' && typeof JSON.parse !== 'undefined') {
+		if(typeof JSON !== 'undefined') {
 			callback();
 			return;
 		}
@@ -161,7 +160,7 @@
 		var poll = function() {
 			setTimeout(function() {
 				timeout--;
-				if(typeof JSON.stringify !== 'undefined' && typeof JSON.parse !== 'undefined') {
+				if(typeof JSON !== 'undefined') {
 					callback();
 					return;
 				} else if (timeout > 0) {
