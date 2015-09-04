@@ -147,5 +147,34 @@
 		}
 	};
 
-	setCookie();
+	var loadJSON = function(callback) {
+		if(typeof JSON.stringify !== 'undefined' && typeof JSON.parse !== 'undefined') {
+			callback();
+			return;
+		}
+		var fileref = document.createElement('script');
+		fileref.setAttribute('type', 'text/javascript');
+		fileref.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/json2/20150503/json2.min.js');
+		document.getElementsByTagName("head")[0].appendChild(fileref);
+
+		var timeout = 100; //wait for 10 seconds at max
+		var poll = function() {
+			setTimeout(function() {
+				timeout--;
+				if(typeof JSON.stringify !== 'undefined' && typeof JSON.parse !== 'undefined') {
+					callback();
+					return;
+				} else if (timeout > 0) {
+					poll();
+				} else {
+					console.error('Cannot set traffic cookie: failed to load JSON!');
+				}
+			}, 100);
+		};
+
+		poll();
+	};
+
+	loadJSON(setCookie);
+	
 })(window, document);
