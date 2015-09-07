@@ -57,15 +57,15 @@
 
 		getMedium: function(ccokieObj)
 		{
-			if(cookieObj.utm_medium !== '') return cookieObj.utm_medium;
+			if(cookieObj.GA_Medium !== '') return cookieObj.GA_Medium;
 
-			if(cookieObj.gclid !== '') return 'cpc';
+			if(cookieObj.GA_GCLID !== '') return 'cpc';
 
-			if(cookieObj.utm_source === '') return '';
+			if(cookieObj.GA_Source === '') return '';
 
-			if(cookieObj.utm_source === 'direct') return '(none)';
+			if(cookieObj.GA_Source === 'direct') return '(none)';
 
-			if(cookieObj.utm_term !== '') return 'organic';
+			if(cookieObj.GA_Keyword !== '') return 'organic';
 
 			return 'referral';
 		},
@@ -83,23 +83,31 @@
 				return match;
 			}
 			return '';
+		},
+		getClientID: function(){
+			var tracker = ga.getAll()[0];
+			return tracker.get('clientId');
 		}
+
 	};
 
 	var parameters = [{
-		key: 'utm_source',
+		key: 'GA_Source',
 		required:  true
 	}, {
-		key: 'utm_medium',
+		key: 'GA_Medium',
 		required: true
 	}, {
-		key: 'utm_campaign',
+		key: 'GA_Campaign',
 		required: true
 	}, {
-		key: 'utm_content',
+		key: 'GA_ClientID',
 		required: false
 	}, {
-		key: 'utm_term',
+		key: 'GA_Content',
+		required: false
+	}, {
+		key: 'GA_Keyword',
 		required: false
 	}];
 
@@ -107,7 +115,7 @@
 
 	var setCookie = function()
 	{
-		cookieObj.gclid = utils.getParameterByName(document.location.href, 'gclid');
+		cookieObj.GA_GCLID = utils.getParameterByName(document.location.href, 'gclid');
 
 		var ignoreUtmParameters = false;
 		for(var i = 0; i < parameters.length; i++) {
@@ -122,23 +130,24 @@
 			cookieObj[parameters[i]['key']] = value;
 		}
 
-		if (cookieObj.gclid !== '' && cookieObj.utm_source === '')
+		if (cookieObj.GA_GCLID !== '' && cookieObj.GA_Source === '')
 		{
-			cookieObj.utm_source = 'google';
+			cookieObj.GA_Source = 'google';
 		} 
 		else if(ignoreUtmParameters)
 		{
 			if(document.referrer.indexOf(document.location.host) >= 0) return;
 			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
-			cookieObj.utm_source = document.referrer !== '' ? document.referrer : 'direct';
+			cookieObj.GA_Source = document.referrer !== '' ? document.referrer : 'direct';
 		}
 		
-		cookieObj.utm_term = cookieObj.utm_term === '' ? utils.getKeywords(cookieObj.utm_source) : cookieObj.utm_term;
-		cookieObj.utm_medium = utils.getMedium(cookieObj);
-		cookieObj.landing_page = document.location.href;
-		cookieObj.utm_source = utils.getHostname(cookieObj.utm_source);
+		cookieObj.GA_Keyword = cookieObj.GA_Keyword === '' ? utils.getKeywords(cookieObj.GA_Source) : cookieObj.GA_Keyword;
+		cookieObj.GA_Medium = utils.getMedium(cookieObj);
+		cookieObj.GA_Landing_Page = document.location.href;
+		cookieObj.GA_Source = utils.getHostname(cookieObj.GA_Source);
+		cookieObj.GA_ClientID = utils.getClientID();
 
-		if(cookieObj.utm_source !== '')
+		if(cookieObj.GA_Source !== '')
 		{
 			var cookieStr = JSON.stringify(cookieObj);
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
@@ -173,7 +182,6 @@
 
 		poll();
 	};
-
 	loadJSON(setCookie);
 	
 })(window, document);
