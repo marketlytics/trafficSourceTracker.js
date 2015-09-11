@@ -1,5 +1,14 @@
+<script>
 (function (window, document)
 {
+
+	if(typeof JSON === 'undefined') {
+		var fileref = document.createElement('script');
+		fileref.setAttribute('type', 'text/javascript');
+		fileref.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/json2/20150503/json2.min.js');
+		document.getElementsByTagName("head")[0].appendChild(fileref);
+	}
+
 	var cookieStrKey = 'traffic_src';
 	
 	//inject global function for cookie retrieval
@@ -57,15 +66,15 @@
 
 		getMedium: function(ccokieObj)
 		{
-			if(cookieObj.GA_Medium !== '') return cookieObj.GA_Medium;
+			if(cookieObj.ga_medium !== '') return cookieObj.ga_medium;
 
-			if(cookieObj.GA_GCLID !== '') return 'cpc';
+			if(cookieObj.gclid !== '') return 'cpc';
 
-			if(cookieObj.GA_Source === '') return '';
+			if(cookieObj.ga_source === '') return '';
 
-			if(cookieObj.GA_Source === 'direct') return '(none)';
+			if(cookieObj.ga_source === 'direct') return '(none)';
 
-			if(cookieObj.GA_Keyword !== '') return 'organic';
+			if(cookieObj.ga_keyword !== '') return 'organic';
 
 			return 'referral';
 		},
@@ -84,30 +93,44 @@
 			}
 			return '';
 		},
-		getClientID: function(){
-			var tracker = ga.getAll()[0];
-			return tracker.get('clientId');
-		}
 
-	};
+		waitLoad: function(condition, callback) {
+			var timeout = 100;
+			var poll = function() {
+				setTimeout(function() {
+					timeout--;
+					if(condition()) {
+						callback();
+					} else if (timeout > 0) {
+						poll();
+					} else {
+						console.error('timed-out!!');
+					}
+				}, 100);
+			};
+			poll();
+		}
+    };
 
 	var parameters = [{
-		key: 'GA_Source',
+		key: 'utm_source',
+		label: 'ga_source',
 		required:  true
 	}, {
-		key: 'GA_Medium',
+		key: 'utm_medium',
+		label: 'ga_medium',
 		required: true
 	}, {
-		key: 'GA_Campaign',
+		key: 'utm_campaign',
+		label: 'ga_campaign',
 		required: true
 	}, {
-		key: 'GA_ClientID',
+		key: 'utm_content',
+		label: 'ga_content',
 		required: false
 	}, {
-		key: 'GA_Content',
-		required: false
-	}, {
-		key: 'GA_Keyword',
+		key: 'utm_term',
+		label: 'ga_keyword',
 		required: false
 	}];
 
@@ -115,7 +138,7 @@
 
 	var setCookie = function()
 	{
-		cookieObj.GA_GCLID = utils.getParameterByName(document.location.href, 'gclid');
+		cookieObj.ga_gclid = utils.getParameterByName(document.location.href, 'gclid');
 
 		var ignoreUtmParameters = false;
 		for(var i = 0; i < parameters.length; i++) {
@@ -123,65 +146,46 @@
 			if(parameters[i].required && value === '') {
 				ignoreUtmParameters = true;
 				for(var j = 0; j < parameters.length; j++) {
-					cookieObj[parameters[j]['key']] = '';
+					cookieObj[parameters[j]['label']] = '';
 				}
 				break;
 			}
-			cookieObj[parameters[i]['key']] = value;
+			cookieObj[parameters[i]['label']] = value;
 		}
 
-		if (cookieObj.GA_GCLID !== '' && cookieObj.GA_Source === '')
+		if (cookieObj.ga_gclid !== '' && cookieObj.ga_source === '')
 		{
-			cookieObj.GA_Source = 'google';
+			cookieObj.ga_source = 'google';
 		} 
 		else if(ignoreUtmParameters)
 		{
 			if(document.referrer.indexOf(document.location.host) >= 0) return;
 			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
-			cookieObj.GA_Source = document.referrer !== '' ? document.referrer : 'direct';
+			cookieObj.ga_source = document.referrer !== '' ? document.referrer : 'direct';
 		}
 		
-		cookieObj.GA_Keyword = cookieObj.GA_Keyword === '' ? utils.getKeywords(cookieObj.GA_Source) : cookieObj.GA_Keyword;
-		cookieObj.GA_Medium = utils.getMedium(cookieObj);
-		cookieObj.GA_Landing_Page = document.location.href;
-		cookieObj.GA_Source = utils.getHostname(cookieObj.GA_Source);
-		cookieObj.GA_ClientID = utils.getClientID();
+		cookieObj.ga_keyword = cookieObj.ga_keyword === '' ? utils.getKeywords(cookieObj.ga_source) : cookieObj.ga_keyword;
+		cookieObj.ga_medium = utils.getMedium(cookieObj);
+		cookieObj.ga_landin_page = document.location.href;
+		cookieObj.ga_source = utils.getHostname(cookieObj.ga_source);
+		cookieObj.ga_client_id = ga.getAll()[0].get('clientId');
 
-		if(cookieObj.GA_Source !== '')
-		{
+
+		if(cookieObj.ga_source !== '') {
 			var cookieStr = JSON.stringify(cookieObj);
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
 			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1);
 		}
+		
 	};
 
-	var loadJSON = function(callback) {
-		if(typeof JSON !== 'undefined') {
-			callback();
-			return;
-		}
-		var fileref = document.createElement('script');
-		fileref.setAttribute('type', 'text/javascript');
-		fileref.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/json2/20150503/json2.min.js');
-		document.getElementsByTagName("head")[0].appendChild(fileref);
-
-		var timeout = 100; //wait for 10 seconds at max
-		var poll = function() {
-			setTimeout(function() {
-				timeout--;
-				if(typeof JSON !== 'undefined') {
-					callback();
-					return;
-				} else if (timeout > 0) {
-					poll();
-				} else {
-					console.error('Cannot set traffic cookie: failed to load JSON!');
-				}
-			}, 100);
-		};
-
-		poll();
-	};
-	loadJSON(setCookie);
+	utils.waitLoad(function() {
+		return typeof JSON !== 'undefined';
+	}, function() {
+		utils.waitLoad(function() {
+			return typeof ga.getAll !== 'undefined';
+		}, setCookie);
+	});
 	
-})(window, document);
+})(window, document)
+</script>
