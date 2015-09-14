@@ -39,9 +39,9 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.google.com.pk/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('www.google.com.pk');
-		expect(cookieObj.utm_medium).to.equal('organic');
-		expect(cookieObj.utm_term).to.equal('(not provided)');
+		expect(cookieObj.ga_source).to.equal('www.google.com.pk');
+		expect(cookieObj.ga_medium).to.equal('organic');
+		expect(cookieObj.ga_keyword).to.equal('(not provided)');
 	});
 
 	it('test 2', function() {
@@ -52,9 +52,9 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.google.com.pk/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('www.google.com.pk');
-		expect(cookieObj.utm_medium).to.equal('organic');
-		expect(cookieObj.utm_term).to.equal('(not provided)');
+		expect(cookieObj.ga_source).to.equal('www.google.com.pk');
+		expect(cookieObj.ga_medium).to.equal('organic');
+		expect(cookieObj.ga_keyword).to.equal('(not provided)');
 	});
 
 	it('test 3', function() {
@@ -65,9 +65,9 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.google.com.pk/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('www.google.com.pk');
-		expect(cookieObj.utm_medium).to.equal('organic');
-		expect(cookieObj.utm_term).to.equal('(not provided)');
+		expect(cookieObj.ga_source).to.equal('www.google.com.pk');
+		expect(cookieObj.ga_medium).to.equal('organic');
+		expect(cookieObj.ga_keyword).to.equal('(not provided)');
 	});
 	
 	it('test 4', function() {
@@ -78,9 +78,9 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.google.com.pk/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('facebook.com');
-		expect(cookieObj.utm_medium).to.equal('cpc');
-		expect(cookieObj.utm_term).to.equal('');
+		expect(cookieObj.ga_source).to.equal('facebook.com');
+		expect(cookieObj.ga_medium).to.equal('cpc');
+		expect(cookieObj.ga_keyword).to.equal('');
 	});
 
 	it('test 5', function() {
@@ -91,9 +91,9 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.bing.com/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('google');
-		expect(cookieObj.utm_medium).to.equal('cpc');
-		expect(cookieObj.gclid).to.equal('CLGDyL2t1ccCFQVuGwodWuUHtw');
+		expect(cookieObj.ga_source).to.equal('google');
+		expect(cookieObj.ga_medium).to.equal('cpc');
+		expect(cookieObj.ga_gclid).to.equal('CLGDyL2t1ccCFQVuGwodWuUHtw');
 	});
 
 	it('test 6 - should not overwrite cookie if referrer is from the same domain', function() {
@@ -104,8 +104,8 @@ describe("Metricon Script", function() {
 		document.referrer = 'http://www.marketlytics.com/';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('google');
-		expect(cookieObj.utm_medium).to.equal('cpc');
+		expect(cookieObj.ga_source).to.equal('google');
+		expect(cookieObj.ga_medium).to.equal('cpc');
 	});
 
 	it('test 7', function() {
@@ -116,7 +116,7 @@ describe("Metricon Script", function() {
 		document.referrer = '';
 		var script = requireUncached('../script');
 		var cookieObj = window.getTrafficSrcCookie();
-		expect(cookieObj.utm_source).to.equal('google');
-		expect(cookieObj.utm_medium).to.equal('cpc');
+		expect(cookieObj.ga_source).to.equal('google');
+		expect(cookieObj.ga_medium).to.equal('cpc');
 	});
 });
