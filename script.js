@@ -68,7 +68,7 @@
 		{
 			if(cookieObj.ga_medium !== '') return cookieObj.ga_medium;
 
-			if(cookieObj.gclid !== '') return 'cpc';
+			if(cookieObj.ga_gclid !== '') return 'cpc';
 
 			if(cookieObj.ga_source === '') return '';
 
