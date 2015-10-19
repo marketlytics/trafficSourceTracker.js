@@ -6,10 +6,15 @@ Google Analytics classic used to provide a handy cookie which contained the traf
 With the move to universal analytics this source tracking was moved serverside leaving all the existing integrations in a lurch. Google Analytics will eventually discontinue classic analytics. This presented a need for replacement script that followed the default attribution model favored by google analytics. 
 
 ## Installation
-Include the script.js file on all pages recommended minify it before use.
-As a result on each the following function is available 
+Include the script.js file on all pages before `</body>` recommended minify it before use.
+Or even better deploy it via Google Tag Manager.
+  - Setup a custom html tag
+  - Add script.js code to the tag.
+  - Trigger `All Pages` 
+  
 
 ## Usage
+As a result on each the following function is available 
 `getTrafficSrcCookie()`
   A global function injected by the script to retrieve the traffic source a/c to the last non-direct click attribution model.
 
@@ -21,7 +26,7 @@ Returns a javascript object if the cookie is saved. Returns null otherwise. The 
 
 | Key             | Type   | Value                                                                                               |
 |-----------------|--------|-----------------------------------------------------------------------------------------------------|
-| ga_source       | string | ‘direct’, ‘google’ or the source fetched from either the utm_source parameter or document.referrer. |
+| ga_source       | string | ‘direct’, ‘google’ or the source fetched from either the utm_source parameter or `document.referrer` |
 | ga_medium       | string | ‘(none)’, ‘cpc’, ‘organic’, ‘referral’ or the value fetched from the utm_medium parameter.          |
 | ga_campaign     | string | ‘(not provided)’ or the utm_term parameter fetched from the parameter or document.referrer.         |
 | ga_content      | string | ‘’ or fetched from utm_content parameter.                                                           |
