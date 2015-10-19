@@ -41,5 +41,5 @@ Where empty string represents absence of a field.
 ## todo
 Cross domain tracking: currently a new traffic source is registered when hostname changes for feature parity with google analytics classic cross domain tracking should be added to pass source data between domains.
 
-License
-This is license under the [MIT License](https://github.com/marketlytics/trafficSource-tracker/blob/master/LICENSE). 
+## License
+This is licensed under the [MIT License](https://github.com/marketlytics/trafficSource-tracker/blob/master/LICENSE). 
