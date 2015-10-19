@@ -7,6 +7,7 @@ With the move to universal analytics this source tracking was moved serverside l
 
 ## Installation
 Include the script.js file on all pages before `</body>` recommended minify it before use.
+
 Or even better deploy it via Google Tag Manager.
   - Setup a custom html tag
   - Add script.js code to the tag.
