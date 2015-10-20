@@ -1,12 +1,12 @@
-# trafficSource-tracker
-A replacement for Google Analytics last non direct click tracking utmz cookie. This can be used to collect data about source of traffic for integration with crm
+# trafficSourceTracker.js
+A replacement for Google Analytics last non direct click tracking done by __utmz cookie. This can be used to collect data about source of traffic for integration with crm
 
 Google Analytics classic used to provide a handy cookie which contained the traffic source information for the user visiting the site. The data stored in the cookie followed google analytics last non direct click model for traffic attribution and stored the source in a handy format. This was a boon for any marketers looking to integrate traffic source data into 3rd party tools like CRM and other databases.
 
 With the move to universal analytics this source tracking was moved serverside leaving all the existing integrations in a lurch. Google Analytics will eventually discontinue classic analytics. This presented a need for replacement script that followed the default attribution model favored by google analytics. 
 
 ## Installation
-Include the script.js file on all pages before `</body>` recommended minify it before use.
+Include the trafficSourceTracker.js file on all pages before `</body>` recommended minify it before use.
 
 Or even better deploy it via Google Tag Manager.
   - Setup a custom html tag
