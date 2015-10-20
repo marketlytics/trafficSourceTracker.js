@@ -1,7 +1,7 @@
 {
-  "name": "metricon-traffic-source-script",
-  "version": "0.0.0",
-  "main": "script.js",
+  "name": "trafficSourceTracker",
+  "version": "0.5.0",
+  "main": "trafficSourceTracker.js",
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.2.0",
