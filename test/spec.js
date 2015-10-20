@@ -29,7 +29,7 @@ global.document = {
 global.document.cookie = '';
 global.window = {};
 
-describe("Metricon Script", function() {
+describe("Traffic Source Tracker", function() {
 
 	it('test 1', function() {
 		document.location = {
