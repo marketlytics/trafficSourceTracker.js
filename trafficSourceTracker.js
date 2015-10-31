@@ -15,6 +15,7 @@
 		document.getElementsByTagName("head")[0].appendChild(fileref);
 	}
 
+	// set cookie name
 	var cookieStrKey = 'traffic_src';
 	
 	//inject global function for cookie retrieval
@@ -122,6 +123,7 @@
 		}
     };
 
+    // query params keys to look for to get utm data
 	var parameters = [{
 		key: 'utm_source',
 		label: 'ga_source',
