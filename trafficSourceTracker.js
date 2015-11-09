@@ -15,6 +15,7 @@
 		document.getElementsByTagName("head")[0].appendChild(fileref);
 	}
 
+	// set cookie name
 	var cookieStrKey = 'traffic_src';
 	
 	//inject global function for cookie retrieval
@@ -47,7 +48,7 @@
 
 		getKeywords: function(url)
 		{	
-			if(url === '' || url === 'direct') return '';
+			if(url === '' || url === '(direct)') return '';
 			
 			var searchEngines = 'daum:q eniro:search_word naver:query pchome:q images.google:q google:q yahoo:p yahoo:q msn:q bing:q aol:query aol:q lycos:q lycos:query ask:q cnn:query virgilio:qs baidu:wd baidu:word alice:qs yandex:text najdi:q seznam:q rakuten:qt biglobe:q goo.ne:MT search.smt.docomo:MT onet:qt onet:q kvasir:q terra:query rambler:query conduit:q babylon:q search-results:q avg:q comcast:q incredimail:q startsiden:q go.mail.ru:q centrum.cz:q 360.cn:q sogou:query tut.by:query globo:q ukr:q so.com:q haosou.com:q auone:q'.split(' ');
 			for(var i = 0; i < searchEngines.length; i++)
@@ -55,8 +56,12 @@
 				var val = searchEngines[i].split(':');
 				var name = val[0];
 				var queryParam = val[1];
-				if(url.indexOf(name) >= 0 && this.getParameterByName(url, queryParam) !== '') {
-					return this.getParameterByName(url, queryParam);
+				if(url.indexOf(name) >= 0){
+					// set source of traffic to search engine
+					cookieObj.ga_source = name;				
+					if(this.getParameterByName(url, queryParam) !== '') {
+						return this.getParameterByName(url, queryParam);
+					}
 				}
 			}
 			
@@ -78,7 +83,7 @@
 
 			if(cookieObj.ga_source === '') return '';
 
-			if(cookieObj.ga_source === 'direct') return '(none)';
+			if(cookieObj.ga_source === '(direct)') return '(none)';
 
 			if(cookieObj.ga_keyword !== '') return 'organic';
 
@@ -118,6 +123,7 @@
 		}
     };
 
+    // query params keys to look for to get utm data
 	var parameters = [{
 		key: 'utm_source',
 		label: 'ga_source',
@@ -167,7 +173,7 @@
 		{
 			if(document.referrer.indexOf(document.location.host) >= 0) return;
 			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
-			cookieObj.ga_source = document.referrer !== '' ? document.referrer : 'direct';
+			cookieObj.ga_source = document.referrer !== '' ? document.referrer : '(direct)';
 		}
 		
 		cookieObj.ga_keyword = cookieObj.ga_keyword === '' ? utils.getKeywords(cookieObj.ga_source) : cookieObj.ga_keyword;
@@ -180,7 +186,7 @@
 		if(cookieObj.ga_source !== '') {
 			var cookieStr = JSON.stringify(cookieObj);
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
-			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1);
+			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1) + '; path=/';
 		}
 		
 	};
