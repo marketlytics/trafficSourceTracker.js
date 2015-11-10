@@ -5,6 +5,13 @@ Google Analytics classic used to provide a handy cookie which contained the traf
 
 With the move to universal analytics this source tracking was moved serverside leaving all the existing integrations in a lurch. Google Analytics will eventually discontinue classic analytics. This presented a need for replacement script that followed the default attribution model favored by google analytics. 
 
+## Whats it good for?
+- Enhance CRM data with marketing campaigns
+- Send a bit more context with Contact Form Enquiries
+- Send traffic source data to another site [affiliate]
+
+Some more use cases and approaches can be seen in the [launch blog post.](http://marketlytics.com/integrate-traffic-source-in-crm/)
+
 ## Installation
 Include the trafficSourceTracker.js file on all pages before `</body>` recommended minify it before use.
 
@@ -13,7 +20,6 @@ Or even better deploy it via Google Tag Manager.
   - Add script.js code to the tag.
   - Trigger `All Pages` 
   
-
 ## Usage
 As a result on each the following function is available 
 `getTrafficSrcCookie()`
