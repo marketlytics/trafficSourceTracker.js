@@ -57,7 +57,7 @@
 			//we compare pre-define searchEngines object to find relavent keywords in url
 			var searchEngines = 'daum:q eniro:search_word naver:query pchome:q images.google:q google:q yahoo:p yahoo:q msn:q bing:q aol:query aol:q lycos:q lycos:query ask:q cnn:query virgilio:qs baidu:wd baidu:word alice:qs yandex:text najdi:q seznam:q rakuten:qt biglobe:q goo.ne:MT search.smt.docomo:MT onet:qt onet:q kvasir:q terra:query rambler:query conduit:q babylon:q search-results:q avg:q comcast:q incredimail:q startsiden:q go.mail.ru:q centrum.cz:q 360.cn:q sogou:query tut.by:query globo:q ukr:q so.com:q haosou.com:q auone:q'.split(' ');
 			for(var i = 0; i < searchEngines.length; i++)
-			{
+			{// set source of traffic to search engine
 				var val = searchEngines[i].split(':');
 				var name = val[0];
 				var queryParam = val[1];
@@ -169,7 +169,7 @@
 			}
 			cookieObj[parameters[i]['label']] = value;
 		}
-		// if gclif is empty and soruce is empty set source to google 
+		// if gclid is empty and soruce is empty set source to google, asumptions 
 		if (cookieObj.ga_gclid !== '' && cookieObj.ga_source === '')
 		{
 			cookieObj.ga_source = 'google';
