@@ -26,7 +26,7 @@
 		for(var i = 0; i < cookies.length; i++) {
 			//indexOf gets starting index of traffic_src
 			if(cookies[i].indexOf(cookieStrKey) >= 0) { 
-				//stoing 
+				//storing cookie value in cookieObj if traffic source is >=0 
 				cookieObj = cookies[i];
 				break;
 			}
@@ -56,10 +56,10 @@
 		getKeywords: function(url)
 		{	//return empty sting if url is empty or direct
 			if(url === '' || url === '(direct)') return '';
-			
+			// getting deafual searchEngines values, split on space to check each value seprately
 			var searchEngines = 'daum:q eniro:search_word naver:query pchome:q images.google:q google:q yahoo:p yahoo:q msn:q bing:q aol:query aol:q lycos:q lycos:query ask:q cnn:query virgilio:qs baidu:wd baidu:word alice:qs yandex:text najdi:q seznam:q rakuten:qt biglobe:q goo.ne:MT search.smt.docomo:MT onet:qt onet:q kvasir:q terra:query rambler:query conduit:q babylon:q search-results:q avg:q comcast:q incredimail:q startsiden:q go.mail.ru:q centrum.cz:q 360.cn:q sogou:query tut.by:query globo:q ukr:q so.com:q haosou.com:q auone:q'.split(' ');
 			for(var i = 0; i < searchEngines.length; i++)
-			{
+			{//split on :(colon), and store in two variables name and queryParam
 				var val = searchEngines[i].split(':');
 				var name = val[0];
 				var queryParam = val[1];
@@ -97,7 +97,7 @@
 
 			return 'referral';
 		},
-	//getting current date
+	
 		getDateAfterYears: function(years)
 		{
 			return new Date(new Date().getTime() + (years * 365 * 24 * 60 * 60 * 1000));
@@ -153,7 +153,7 @@
 		label: 'ga_keyword',
 		required: false
 	}];
-
+	// cookie Object created to store all values
 	var cookieObj = {};
 	 //gclid = checks for value passed between google and adwords
 	var setCookie = function()
@@ -162,7 +162,9 @@
 
 		var ignoreUtmParameters = false;
 		for(var i = 0; i < parameters.length; i++) {
+			//check value in href and parameter key
 			var value = utils.getParameterByName(document.location.href, parameters[i].key);
+			//if paramter is required and value is null then set bool variable to true(to be used later) and set all label to null
 			if(parameters[i].required && value === '') {
 				ignoreUtmParameters = true;
 				for(var j = 0; j < parameters.length; j++) {
@@ -170,15 +172,16 @@
 				}
 				break;
 			}
+			//setting label with variable value
 			cookieObj[parameters[i]['label']] = value;
 		}
-		// if gclif is empty and soruce is empty set source to google 
+		// if gclid is not empty and soruce is empty set source to google 
 		if (cookieObj.ga_gclid !== '' && cookieObj.ga_source === '')
 		{
 			cookieObj.ga_source = 'google';
 		} 
 		else if(ignoreUtmParameters)
-		{ //check for refferrer url and url of current page, if both are same return direct as source
+		{ //check for refferrer url of host to be >=0
 			if(document.referrer.indexOf(document.location.host) >= 0) return;
 			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
 			cookieObj.ga_source = document.referrer !== '' ? document.referrer : '(direct)';
@@ -202,7 +205,7 @@
 	};
 
 	utils.waitLoad(function() {
-		//works if JSON is not undedfined
+		//works if JSON is not undedfined, return JSON values
 		return typeof JSON !== 'undefined';
 	}, function() {
 		//works when Analytics tracker(ga) exists on site
