@@ -203,7 +203,7 @@
 		//works if JSON is not undedfined
 		return typeof JSON !== 'undefined';
 	}, function() {
-		//works when Analytics tracker(ga) exists on site
+		//works when Analytics tracker(ga) exists on site, wait for some type before returing ga values and calling function setcookie
 		utils.waitLoad(function() {
 			return typeof ga.getAll !== 'undefined';
 		}, setCookie);
