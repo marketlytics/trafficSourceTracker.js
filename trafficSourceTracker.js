@@ -57,7 +57,7 @@
 			//we compare pre-define searchEngines object to find relavent keywords in url
 			var searchEngines = 'daum:q eniro:search_word naver:query pchome:q images.google:q google:q yahoo:p yahoo:q msn:q bing:q aol:query aol:q lycos:q lycos:query ask:q cnn:query virgilio:qs baidu:wd baidu:word alice:qs yandex:text najdi:q seznam:q rakuten:qt biglobe:q goo.ne:MT search.smt.docomo:MT onet:qt onet:q kvasir:q terra:query rambler:query conduit:q babylon:q search-results:q avg:q comcast:q incredimail:q startsiden:q go.mail.ru:q centrum.cz:q 360.cn:q sogou:query tut.by:query globo:q ukr:q so.com:q haosou.com:q auone:q'.split(' ');
 			for(var i = 0; i < searchEngines.length; i++)
-			{// set source of traffic to search engine
+			{//set source of traffic to search engine
 				var val = searchEngines[i].split(':');
 				var name = val[0];
 				var queryParam = val[1];
@@ -93,7 +93,7 @@
 
 			return 'referral';
 		},
-	//getting date and time for deifine number of years from today 
+	//getting date and time for define number of years from today 
 		getDateAfterYears: function(years)
 		{
 			return new Date(new Date().getTime() + (years * 365 * 24 * 60 * 60 * 1000));
@@ -108,7 +108,6 @@
 			}
 			return '';
 		},
-	//setting 100millisecond wait, set wait between condtion and callback function
 		waitLoad: function(condition, callback) {
 			var timeout = 100;
 			var poll = function() {
@@ -152,7 +151,7 @@
 	//code starts from here, above declare functions are used here
 	var cookieObj = {};
 	 /*gclid = checks for presensce of adword
-	   function below sets all the required values in an object, which is later converted to JSON and saved as cookie */
+function below sets all the required values (traffic detials) in an object name 'cookiObj', which is later converted to JSON and saved as cookie */
 	var setCookie = function()
 	{
 		cookieObj.ga_gclid = utils.getParameterByName(document.location.href, 'gclid');
@@ -169,26 +168,24 @@
 			}
 			cookieObj[parameters[i]['label']] = value;
 		}
-		// if gclid is empty and soruce is empty set source to google, asumptions 
+		//source is assumed to be google when gclid is present and source is NULL
 		if (cookieObj.ga_gclid !== '' && cookieObj.ga_source === '')
 		{
 			cookieObj.ga_source = 'google';
 		} 
 		else if(ignoreUtmParameters)
-		{ //check for refferrer url and url of current page, if both are same return direct as source
+		{ 
 			if(document.referrer.indexOf(document.location.host) >= 0) return;
 			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
 			cookieObj.ga_source = document.referrer !== '' ? document.referrer : '(direct)';
 		}
-		//if there is no keyword value reutrn source, else return keyword value
 		cookieObj.ga_keyword = cookieObj.ga_keyword === '' ? utils.getKeywords(cookieObj.ga_source) : cookieObj.ga_keyword;
 		cookieObj.ga_medium = utils.getMedium(cookieObj);
-		//get landing page as href value of given document
+		//landing page is set to current page url
 		cookieObj.ga_landing_page = document.location.href;
 		cookieObj.ga_source = utils.getHostname(cookieObj.ga_source);
 		cookieObj.ga_client_id = ga.getAll()[0].get('clientId');
 
-		//coverting cookieObj o JSON String
 		if(cookieObj.ga_source !== '') {
 			//coverting Javascript value under cookieObj to JSON String, cookieStr varaible is used to save data in cookie
 			var cookieStr = JSON.stringify(cookieObj);
@@ -200,7 +197,6 @@
 	};
 
 	utils.waitLoad(function() {
-		//works if JSON is not undedfined
 		return typeof JSON !== 'undefined';
 	}, function() {
 		//works when Analytics tracker(ga) exists on site, wait for some type before returing ga values and calling function setcookie
