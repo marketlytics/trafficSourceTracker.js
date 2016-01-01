@@ -184,7 +184,6 @@
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
 			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1)+'; path=/';
 		}
-		dataLayer.push({'event':'trafficSrcCookieSet'})
 	};
 
 	utils.waitLoad(function() {
