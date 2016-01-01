@@ -1,13 +1,11 @@
 /*
 # Traffic Source Tracker - Google Analytics Last Non Direct Click Model
-# Copyright (c) 2015, MarketLytics
 # 
 # This project is free software, distributed under the MIT license. 
-# MarketLytics offers digital analytics consulting and integration services.
 */
 (function (window, document)
 {
-
+	//Checks if site has JSON embeded if not it adds JSON library
 	if(typeof JSON === 'undefined') {
 		var fileref = document.createElement('script');
 		fileref.setAttribute('type', 'text/javascript');
@@ -15,7 +13,6 @@
 		document.getElementsByTagName("head")[0].appendChild(fileref);
 	}
 
-	// set cookie name
 	var cookieStrKey = 'traffic_src';
 	
 	//inject global function for cookie retrieval
@@ -38,6 +35,7 @@
 	};
 
 	var utils = {
+		//Function to get parameter by their name
 		getParameterByName: function(url, name)
 		{
 			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -45,7 +43,7 @@
 			var results = regex.exec(url);
 			return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 		},
-
+		//Function to get Keywords from url according to their respective search engines.
 		getKeywords: function(url)
 		{	
 			if(url === '' || url === '(direct)') return '';
@@ -56,12 +54,11 @@
 				var val = searchEngines[i].split(':');
 				var name = val[0];
 				var queryParam = val[1];
-				if(url.indexOf(name) >= 0){
-					// set source of traffic to search engine
-					cookieObj.ga_source = name;				
-					if(this.getParameterByName(url, queryParam) !== '') {
-						return this.getParameterByName(url, queryParam);
-					}
+				if(url.indexOf(name) >= 0) {
+				  cookieObj.ga_source = name; // set source to searchEngine name
+                  if(this.getParameterByName(url, queryParam) !== ''){
+	                  return this.getParameterByName(url, queryParam);
+                  }
 				}
 			}
 			
@@ -74,7 +71,7 @@
 			
 			return '';
 		},
-
+		//Sets medium using other UTM Params
 		getMedium: function(ccokieObj)
 		{
 			if(cookieObj.ga_medium !== '') return cookieObj.ga_medium;
@@ -94,7 +91,7 @@
 		{
 			return new Date(new Date().getTime() + (years * 365 * 24 * 60 * 60 * 1000));
 		},
-
+		//Function to get site host
 		getHostname: function(url)
 		{
 			var re = new RegExp('^(https:\/\/|http:\/\/)?([^\/?:#]+)');
@@ -104,7 +101,7 @@
 			}
 			return '';
 		},
-
+		
 		waitLoad: function(condition, callback) {
 			var timeout = 100;
 			var poll = function() {
@@ -123,7 +120,6 @@
 		}
     };
 
-    // query params keys to look for to get utm data
 	var parameters = [{
 		key: 'utm_source',
 		label: 'ga_source',
@@ -131,11 +127,11 @@
 	}, {
 		key: 'utm_medium',
 		label: 'ga_medium',
-		required: true
+		required: false
 	}, {
 		key: 'utm_campaign',
 		label: 'ga_campaign',
-		required: true
+		required: false
 	}, {
 		key: 'utm_content',
 		label: 'ga_content',
@@ -186,9 +182,8 @@
 		if(cookieObj.ga_source !== '') {
 			var cookieStr = JSON.stringify(cookieObj);
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
-			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1) + '; path=/';
+			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1)+'; path=/';
 		}
-		
 	};
 
 	utils.waitLoad(function() {
@@ -199,4 +194,4 @@
 		}, setCookie);
 	});
 	
-})(window, document)
+})(window, document);
