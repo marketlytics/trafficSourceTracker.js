@@ -205,4 +205,12 @@ function below sets all the required values (traffic detials) in an object name 
 		}, setCookie);
 	});
 	
+	//Creates an event in jQuery on script ready.
+	$.event.trigger({
+		type: "Traffic_Source_Ready",
+		message: "Traffic Source Ready",
+		cookieData:getTrafficSrcCookie(),
+		time: new Date()
+	});
+	
 })(window, document)
