@@ -198,5 +198,13 @@
 			return typeof ga.getAll !== 'undefined';
 		}, setCookie);
 	});
+
+	//Creates an event in jQuery on script ready.
+	$.event.trigger({
+		type: "Traffic_Source_Ready",
+		message: "Traffic Source Ready",
+		cookieData:getTrafficSrcCookie(),
+		time: new Date()
+	});
 	
 })(window, document)
