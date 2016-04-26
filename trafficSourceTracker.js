@@ -7,37 +7,42 @@
 */
 (function (window, document)
 {
-
-	if(typeof JSON === 'undefined') {
+	//including javascript in web page when JSON is undifined(first time), creating json source attribute, appending in head tag
+	if(typeof JSON === 'undefined') { 
 		var fileref = document.createElement('script');
 		fileref.setAttribute('type', 'text/javascript');
 		fileref.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/json2/20150503/json2.min.js');
 		document.getElementsByTagName("head")[0].appendChild(fileref);
 	}
 
-	// set cookie name
+	//cookieStrKey is used to set cookie name
 	var cookieStrKey = 'traffic_src';
 	
 	//inject global function for cookie retrieval
 	window.getTrafficSrcCookie = function()
-	{
+	{	
 		var cookies = document.cookie.split(';');
 		var cookieObj;
 		for(var i = 0; i < cookies.length; i++) {
-			if(cookies[i].indexOf(cookieStrKey) >= 0) {
+			
+			if(cookies[i].indexOf(cookieStrKey) >= 0) { 
+				
 				cookieObj = cookies[i];
 				break;
 			}
 		}
+		//cookie values are copied into cookieObj and return in JSON format
 		if(cookieObj)
 		{
 			cookieObj = cookieObj.substring(cookieObj.indexOf('=') + 1, cookieObj.length);
 			return JSON.parse(cookieObj);
 		}
+		
 		return null;
 	};
-
+	
 	var utils = {
+		//function is use to compare two parameters and return value if valid, it looks for name(any variable) in url and returns its docoded value if found in url
 		getParameterByName: function(url, name)
 		{
 			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -47,24 +52,24 @@
 		},
 
 		getKeywords: function(url)
-		{	
+		{	//return empty sting if url is empty or direct, which indicate no keywords used
 			if(url === '' || url === '(direct)') return '';
-			
+			//we compare pre-define searchEngines object to find relavent keywords in url
 			var searchEngines = 'daum:q eniro:search_word naver:query pchome:q images.google:q google:q yahoo:p yahoo:q msn:q bing:q aol:query aol:q lycos:q lycos:query ask:q cnn:query virgilio:qs baidu:wd baidu:word alice:qs yandex:text najdi:q seznam:q rakuten:qt biglobe:q goo.ne:MT search.smt.docomo:MT onet:qt onet:q kvasir:q terra:query rambler:query conduit:q babylon:q search-results:q avg:q comcast:q incredimail:q startsiden:q go.mail.ru:q centrum.cz:q 360.cn:q sogou:query tut.by:query globo:q ukr:q so.com:q haosou.com:q auone:q'.split(' ');
 			for(var i = 0; i < searchEngines.length; i++)
-			{
+			{//set source of traffic to search engine
 				var val = searchEngines[i].split(':');
 				var name = val[0];
 				var queryParam = val[1];
 				if(url.indexOf(name) >= 0){
-					// set source of traffic to search engine
 					cookieObj.ga_source = name;				
 					if(this.getParameterByName(url, queryParam) !== '') {
+						//return value of queryParamter, extracted keyowrd
 						return this.getParameterByName(url, queryParam);
 					}
 				}
 			}
-			
+		//if url matches exact case of below regix we return not provided, which means campaign data is not present
 			var google = new RegExp('^https?:\/\/(www\.)?google(\.com?)?(\.[a-z]{2}t?)?\/?$', 'i');
 			var yahoo = new RegExp('^https?:\/\/(r\.)?search\.yahoo\.com\/?[^?]*$', 'i');
 			var bing = new RegExp('^https?:\/\/(www\.)?bing\.com\/?$', 'i');
@@ -74,7 +79,6 @@
 			
 			return '';
 		},
-
 		getMedium: function(ccokieObj)
 		{
 			if(cookieObj.ga_medium !== '') return cookieObj.ga_medium;
@@ -89,12 +93,12 @@
 
 			return 'referral';
 		},
-
+	//getting date and time for define number of years from today 
 		getDateAfterYears: function(years)
 		{
 			return new Date(new Date().getTime() + (years * 365 * 24 * 60 * 60 * 1000));
 		},
-
+	//checking url to return approprate hostname
 		getHostname: function(url)
 		{
 			var re = new RegExp('^(https:\/\/|http:\/\/)?([^\/?:#]+)');
@@ -104,7 +108,6 @@
 			}
 			return '';
 		},
-
 		waitLoad: function(condition, callback) {
 			var timeout = 100;
 			var poll = function() {
@@ -145,9 +148,10 @@
 		label: 'ga_keyword',
 		required: false
 	}];
-
+	//code starts from here, above declare functions are used here
 	var cookieObj = {};
-
+	 /*gclid = checks for presensce of adword
+function below sets all the required values (traffic detials) in an object name 'cookiObj', which is later converted to JSON and saved as cookie */
 	var setCookie = function()
 	{
 		cookieObj.ga_gclid = utils.getParameterByName(document.location.href, 'gclid');
@@ -164,27 +168,28 @@
 			}
 			cookieObj[parameters[i]['label']] = value;
 		}
-
+		//source is assumed to be google when gclid is present and source is NULL
 		if (cookieObj.ga_gclid !== '' && cookieObj.ga_source === '')
 		{
 			cookieObj.ga_source = 'google';
 		} 
 		else if(ignoreUtmParameters)
-		{
+		{ 
 			if(document.referrer.indexOf(document.location.host) >= 0) return;
 			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
 			cookieObj.ga_source = document.referrer !== '' ? document.referrer : '(direct)';
 		}
-		
 		cookieObj.ga_keyword = cookieObj.ga_keyword === '' ? utils.getKeywords(cookieObj.ga_source) : cookieObj.ga_keyword;
 		cookieObj.ga_medium = utils.getMedium(cookieObj);
+		//landing page is set to current page url
 		cookieObj.ga_landing_page = document.location.href;
 		cookieObj.ga_source = utils.getHostname(cookieObj.ga_source);
 		cookieObj.ga_client_id = ga.getAll()[0].get('clientId');
 
-
 		if(cookieObj.ga_source !== '') {
+			//coverting Javascript value under cookieObj to JSON String, cookieStr varaible is used to save data in cookie
 			var cookieStr = JSON.stringify(cookieObj);
+			//Creating cookie with expiry set for one year, can be accessed by function getTrafficSrcCookie()
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
 			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1) + '; path=/';
 		}
@@ -194,11 +199,12 @@
 	utils.waitLoad(function() {
 		return typeof JSON !== 'undefined';
 	}, function() {
+		//works when Analytics tracker(ga) exists on site, wait for some type before returing ga values and calling function setcookie
 		utils.waitLoad(function() {
 			return typeof ga.getAll !== 'undefined';
 		}, setCookie);
 	});
-
+	
 	//Creates an event in jQuery on script ready.
 	$.event.trigger({
 		type: "Traffic_Source_Ready",
