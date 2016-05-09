@@ -21,7 +21,7 @@
 	var cookieStrKey = 'traffic_src';
 	
 	//inject global function for cookie retrieval.
-	window.getTrafficSrcCookie = function()
+	var getTrafficSrcCookie = function()
 	{
 		var cookies = document.cookie.split(';');
 		var cookieObj;
@@ -169,7 +169,7 @@
 	 * function is used to save values in cookie defined above.
 	 */
 	
-	var setCookie = function()
+	var setCookie = function(getGaClient)
 	{	
 		cookieObj.ga_gclid = utils.getParameterByName(document.location.href, 'gclid');
 
@@ -209,7 +209,10 @@
 		//landing page is set to current page url.
 		cookieObj.ga_landing_page = document.location.href;
 		cookieObj.ga_source = utils.getHostname(cookieObj.ga_source);
-		cookieObj.ga_client_id = ga.getAll()[0].get('clientId');
+		if (getGaClient) {
+			cookieObj.ga_client_id = ga.getAll()[0].get('clientId');
+		}
+		
 
 
 		if(cookieObj.ga_source !== '') {
@@ -223,21 +226,37 @@
 		dataLayer.push({'event':'trafficSrcCookieSet'})
 	};
 
-	utils.waitLoad(function() {
-		//Checks if JSON Lib is included.
-		return typeof JSON !== 'undefined';
-	}, function() {
-		//works when Analytics tracker(ga) exists on site, wait for some type before returing ga values and calling function setcookie.
+	var setTrafficSrcCookie = function(options) {
+		if (!options) {
+			options = {};
+		}
+
 		utils.waitLoad(function() {
-			return typeof ga.getAll !== 'undefined';
-		}, setCookie);
-	});
-	//Creates an event in jQuery on script ready.
+			//Checks if JSON Lib is included.
+			return typeof JSON !== 'undefined';
+		}, function() {
+			if (options.getGaClient) {
+				//works when Analytics tracker(ga) exists on site, wait for some type before returing ga values and calling function setcookie.
+				utils.waitLoad(function() {
+					return typeof ga.getAll !== 'undefined';
+				}, function() {
+					setCookie(options.getGaClient);
+				});
+				return;
+			}
+			setCookie(options.getGaClient);
+		});
+	}
+
+	window.trafficSrcCookie = {
+		getCookie: getTrafficSrcCookie,
+		setCookie: setTrafficSrcCookie
+	};
+	Creates an event in jQuery on script ready.
 	$.event.trigger({
 		type: "Traffic_Source_Ready",
 		message: "Traffic Source Ready",
 		cookieData:getTrafficSrcCookie(),
 		time: new Date()
 	});
-	
 })(window, document);
