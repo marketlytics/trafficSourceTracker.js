@@ -252,7 +252,7 @@
 		getCookie: getTrafficSrcCookie,
 		setCookie: setTrafficSrcCookie
 	};
-	Creates an event in jQuery on script ready.
+	// Creates an event in jQuery on script ready.
 	$.event.trigger({
 		type: "Traffic_Source_Ready",
 		message: "Traffic Source Ready",
