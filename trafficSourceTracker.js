@@ -1,3 +1,10 @@
+/*
+# Traffic Source Tracker - Google Analytics Last Non Direct Click Model
+# Copyright (c) 2015, MarketLytics
+# 
+# This project is free software, distributed under the MIT license. 
+# MarketLytics offers digital analytics consulting and integration services.
+*/
 (function (window, document)
 {
 	window.dataLayer=window.dataLayer||[];
