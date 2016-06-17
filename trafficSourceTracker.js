@@ -198,7 +198,7 @@
 			if(document.referrer.indexOf(document.location.host) >= 0) return;
 			
 			//Checks is Cookie already exists and also checks if referrer exists.
-			if(window.getTrafficSrcCookie() !== null && document.referrer === '') return;
+			if(getTrafficSrcCookie() !== null && document.referrer === '') return;
 			//Set the default source value '(direct)'.
 			cookieObj.ga_source = document.referrer !== '' ? document.referrer : '(direct)';
 		}
@@ -209,11 +209,10 @@
 		//landing page is set to current page url.
 		cookieObj.ga_landing_page = document.location.href;
 		cookieObj.ga_source = utils.getHostname(cookieObj.ga_source);
+
 		if (getGaClient) {
 			cookieObj.ga_client_id = ga.getAll()[0].get('clientId');
 		}
-		
-
 
 		if(cookieObj.ga_source !== '') {
 			//coverting Javascript value under cookieObj to JSON String, cookieStr varaible is used to save data in cookie.
@@ -222,8 +221,19 @@
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
 			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1)+'; path=/';
 		}
+		
+		// Creates an event in jQuery on script ready.
+		$.event.trigger({
+			type: "Traffic_Source_Ready",
+			message: "Traffic Source Ready",
+			cookieData:getTrafficSrcCookie(),
+			time: new Date()
+		});
+
 		//Pushes event to dataLayer to prompt that cookies have been saved successfully.
 		dataLayer.push({'event':'trafficSrcCookieSet'})
+
+		cookieObj = {};
 	};
 
 	var setTrafficSrcCookie = function(options) {
@@ -240,23 +250,19 @@
 				utils.waitLoad(function() {
 					return typeof ga.getAll !== 'undefined';
 				}, function() {
-					setCookie(options.getGaClient);
+					setCookie(true);
 				});
 				return;
 			}
-			setCookie(options.getGaClient);
+			setCookie(false);
+
 		});
 	}
-
+	//Set the cookie by default can be overridden using setTrafficSrcCookie global function
+	// setTrafficSrcCookie(cookieObj)
+	
 	window.trafficSrcCookie = {
-		getCookie: getTrafficSrcCookie,
-		setCookie: setTrafficSrcCookie
+		setCookie: setTrafficSrcCookie,
+		getCookie: getTrafficSrcCookie
 	};
-	// Creates an event in jQuery on script ready.
-	$.event.trigger({
-		type: "Traffic_Source_Ready",
-		message: "Traffic Source Ready",
-		cookieData:getTrafficSrcCookie(),
-		time: new Date()
-	});
 })(window, document);
