@@ -1,26 +1,35 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html>
   <head>
-    <meta charset="UTF-8">
-    <title>Trafficsourcetracker.js by marketlytics</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">Trafficsourcetracker.js</h1>
-      <h2 class="project-tagline">A replacement for Google Analytics utmz cookie. This can be used to collect data about source of traffic</h2>
-      <a href="https://github.com/marketlytics/trafficSourceTracker.js" class="btn">View on GitHub</a>
-      <a href="https://github.com/marketlytics/trafficSourceTracker.js/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/marketlytics/trafficSourceTracker.js/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <section class="main-content">
-      <h1>
-<a id="trafficsourcetrackerjs" class="anchor" href="#trafficsourcetrackerjs" aria-hidden="true"><span class="octicon octicon-link"></span></a>trafficSourceTracker.js</h1>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Trafficsourcetracker.js by marketlytics</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Trafficsourcetracker.js</h1>
+        <h2>A replacement for Google Analytics utmz cookie. This can be used to collect data about source of traffic</h2>
+        <a href="https://github.com/marketlytics/trafficSourceTracker.js" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="trafficsourcetrackerjs" class="anchor" href="#trafficsourcetrackerjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>trafficSourceTracker.js</h1>
 
 <p>A replacement for Google Analytics last non direct click tracking done by __utmz cookie. This can be used to collect data about source of traffic for integration with crm</p>
 
@@ -29,10 +38,10 @@
 <p>With the move to universal analytics this source tracking was moved serverside leaving all the existing integrations in a lurch. Google Analytics will eventually discontinue classic analytics. This presented a need for replacement script that followed the default attribution model favored by google analytics. </p>
 
 <h2>
-<a id="whats-it-good-for" class="anchor" href="#whats-it-good-for" aria-hidden="true"><span class="octicon octicon-link"></span></a>Whats it good for?</h2>
+<a id="whats-it-good-for" class="anchor" href="#whats-it-good-for" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Whats it good for?</h2>
 
 <ul>
-<li>Enhance CRM data with marketing campaigns</li>
+<li>Enhance CRM data with marketing campaign data</li>
 <li>Send a bit more context with Contact Form Enquiries</li>
 <li>Send traffic source data to another site [affiliate]</li>
 </ul>
@@ -40,24 +49,35 @@
 <p>Some more use cases and approaches can be seen in the <a href="http://marketlytics.com/integrate-traffic-source-in-crm/">launch blog post.</a></p>
 
 <h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>Include the trafficSourceTracker.js file on all pages before <code>&lt;/body&gt;</code> recommended minify it before use.</p>
+
+<pre><code>&lt;script src="/trafficSourceTracker.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+//initiate script
+trafficSrcCookie.setCookie();
+&lt;/script&gt;
+</code></pre>
+
+<p>// Todo add method to disable collection of Google Analytics Client id. getGaClient:false</p>
 
 <p>Or even better deploy it via Google Tag Manager.</p>
 
 <ul>
 <li>Setup a custom html tag</li>
-<li>Add script.js code to the tag.</li>
+<li>Add the script code to a tag and initiate script via <code>trafficSrcCookie.setCookie();</code>
+</li>
 <li>Trigger <code>All Pages</code> </li>
 </ul>
 
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
-<p>As a result on each the following function is available 
-<code>getTrafficSrcCookie()</code>
-  A global function injected by the script to retrieve the traffic source a/c to the last non-direct click attribution model.</p>
+<p>To use it call
+<code>trafficSrcCookie.getCookie();</code></p>
+
+<p>This will return an object with all key value pairs.</p>
 
 <p>Arguments: 
 none</p>
@@ -121,22 +141,32 @@ Returns a javascript object if the cookie is saved. Returns null otherwise. The 
 <p>Where empty string represents absence of a field.</p>
 
 <h2>
-<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>todo</h2>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>todo</h2>
 
 <p>Cross domain tracking: currently a new traffic source is registered when hostname changes for feature parity with google analytics classic cross domain tracking should be added to pass source data between domains.</p>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>This is licensed under the <a href="https://github.com/marketlytics/trafficSource-tracker/blob/master/LICENSE">MIT License</a>. </p>
+        </section>
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/marketlytics/trafficSourceTracker.js">Trafficsourcetracker.js</a> is maintained by <a href="https://github.com/marketlytics">marketlytics</a>.</span>
+        <aside id="sidebar">
+          <a href="https://github.com/marketlytics/trafficSourceTracker.js/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/marketlytics/trafficSourceTracker.js/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
+          <p class="repo-owner"><a href="https://github.com/marketlytics/trafficSourceTracker.js"></a> is maintained by <a href="https://github.com/marketlytics">marketlytics</a>.</p>
 
-    </section>
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
 
             <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
