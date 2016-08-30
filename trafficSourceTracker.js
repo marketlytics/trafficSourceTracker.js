@@ -35,6 +35,12 @@
 		if(cookieObj)
 		{
 			cookieObj = cookieObj.substring(cookieObj.indexOf('=') + 1, cookieObj.length);
+			// Creates an event in jQuery when cookie is retrieved
+			$.event.trigger({
+				type: "Traffic_Source_Cookie_Get",
+				message: "Traffic Source Cookie Get",
+				time: new Date()
+			});
 			return JSON.parse(cookieObj);
 		}
 		return null;
@@ -221,12 +227,11 @@
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
 			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1)+'; path=/';
 		}
-		
-		// Creates an event in jQuery on script ready.
+	
+		// Creates an event in jQuery when cookie is created/updated
 		$.event.trigger({
-			type: "Traffic_Source_Ready",
-			message: "Traffic Source Ready",
-			cookieData:getTrafficSrcCookie(),
+			type: "Traffic_Source_Cookie_Set",
+			message: "Traffic Source Cookie Set",
 			time: new Date()
 		});
 
@@ -260,7 +265,12 @@
 	}
 	//Set the cookie by default can be overridden using setTrafficSrcCookie global function
 	// setTrafficSrcCookie(cookieObj)
-	
+	// Creates an event in jQuery on script ready.
+	$.event.trigger({
+		type: "Traffic_Source_Ready",
+		message: "Traffic Source Ready",
+		time: new Date()
+	});
 	window.trafficSrcCookie = {
 		setCookie: setTrafficSrcCookie,
 		getCookie: getTrafficSrcCookie
