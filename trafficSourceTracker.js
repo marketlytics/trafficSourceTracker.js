@@ -221,17 +221,31 @@
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
 			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1)+'; path=/';
 		}
-		
-		// Creates an event in jQuery on script ready.
-		$.event.trigger({
+		//Pushes event to dataLayer to prompt that cookies have been saved successfully.
+		dataLayer.push({'event':'trafficSrcCookieSet'})
+
+		// Creates an event in jQuery on script ready. if you want to use jQuery remove comments from code below.
+		/* jQuery.event.trigger({
 			type: "Traffic_Source_Ready",
 			message: "Traffic Source Ready",
 			cookieData:getTrafficSrcCookie(),
 			time: new Date()
-		});
+		});*/ // if you uncomment above code you have to comment out below javascript code till document.dispatchEvent()
 
-		//Pushes event to dataLayer to prompt that cookies have been saved successfully.
-		dataLayer.push({'event':'trafficSrcCookieSet'})
+		// creates events in JavaScript.
+		document.addEventListener("name-of-event", function(e){
+	console.log(e.type);
+});
+// Create the event
+var event = new CustomEvent("name-of-event", {
+ "type": "Traffic_Source_Ready",
+	"message": "Traffic Source Ready",
+	"cookieData":getTrafficSrcCookie(),
+	"time": new Date()
+});
+// Dispatch/Trigger/Fire the event
+document.dispatchEvent(event);
+		
 
 		cookieObj = {};
 	};
