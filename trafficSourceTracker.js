@@ -1,13 +1,21 @@
-/*
-# Traffic Source Tracker - Google Analytics Last Non Direct Click Model
-# Copyright (c) 2015, MarketLytics
-# 
-# This project is free software, distributed under the MIT license. 
-# MarketLytics offers digital analytics consulting and integration services.
-*/
 (function (window, document)
 {
 	window.dataLayer=window.dataLayer||[];
+
+
+function splitHostname() {
+        var result = {};
+        var regexParse = new RegExp('([a-z\-0-9]{2,63})\.([a-z\.]{2,5})$');
+        var urlParts = regexParse.exec(window.location.hostname);
+        result.domain = urlParts[1];
+        result.type = urlParts[2];
+        //result.subdomain = window.location.hostname.replace(result.domain + '.' + result.type, '').slice(0, -1);;
+//console.log(result.subdomain);
+
+        return result;
+}
+var rootDomain = '.' + splitHostname().domain + '.' + splitHostname().type;
+//console.log(splitHostname().domain);
 	
 	//including javascript in web page when JSON is undifined(first time), creating json source attribute, appending in head tag.
 	if(typeof JSON === 'undefined') {
@@ -219,19 +227,34 @@
 			var cookieStr = JSON.stringify(cookieObj);
 			//Creating cookie with expiry set for one year, can be accessed by function getTrafficSrcCookie().
 			document.cookie = cookieStrKey + '=; expires=' + new Date(-1);
-			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1)+'; path=/';
+			document.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1)+'; domain='+rootDomain + '; path=/';
 		}
-		
-		// Creates an event in jQuery on script ready.
-		$.event.trigger({
-			type: "Traffic_Source_Ready",
-			message: "Traffic Source Ready",
-			cookieData:getTrafficSrcCookie(),
-			time: new Date()
-		});
-
 		//Pushes event to dataLayer to prompt that cookies have been saved successfully.
 		dataLayer.push({'event':'trafficSrcCookieSet'})
+		// Creates an event in jQuery on script ready.
+		// jQuery.event.trigger({
+		// 	type: "Traffic_Source_Ready",
+		// 	message: "Traffic Source Ready",
+		// 	cookieData:getTrafficSrcCookie(),
+		// 	time: new Date()
+		// });
+document.addEventListener("name-of-event", function(e){
+	//console.log(e.type);
+});
+
+
+// Create the event
+var event = new CustomEvent("name-of-event", {
+ "type": "Traffic_Source_Ready",
+	message: "Traffic Source Ready",
+	cookieData:getTrafficSrcCookie(),
+	time: new Date()
+});
+
+// Dispatch/Trigger/Fire the event
+document.dispatchEvent(event);
+		
+		
 
 		cookieObj = {};
 	};
