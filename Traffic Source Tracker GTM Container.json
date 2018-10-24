@@ -1,0 +1,175 @@
+{
+    "exportFormatVersion": 2,
+    "exportTime": "2018-10-24 14:25:34",
+    "containerVersion": {
+        "path": "accounts/152155806/containers/10246515/versions/0",
+        "accountId": "152155806",
+        "containerId": "10246515",
+        "containerVersionId": "0",
+        "container": {
+            "path": "accounts/152155806/containers/10246515",
+            "accountId": "152155806",
+            "containerId": "10246515",
+            "name": "Traffic Source Cookie Library",
+            "publicId": "GTM-WZKBQNM",
+            "usageContext": [
+                "WEB"
+            ],
+            "fingerprint": "1540391097055",
+            "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/152155806/containers/10246515/workspaces?apiLink=container"
+        },
+        "tag": [
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "tagId": "2",
+                "name": "JS - Traffic Source Initiator",
+                "type": "html",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "html",
+                        "value": "<script>\n//Code to Save data in cookie using the library with Google Analytics Client ID\ntrafficSrcCookie.setCookie({getGaClient: true});\n\n//Document Listener for the event set by the Traffic Source Tracker Library\ndocument.addEventListener(\"Traffic_Source_Ready_Dom\", function(e){\n});\n\n//jQuery Listener for the event set by the Traffic Source Tracker Library\njQuery(document).on(\"Traffic_Source_Ready_jQuery\",function(){\n});\n\n//jQuery Listener for the event set by the Traffic Source Tracker Library\n$(document).on(\"Traffic_Source_Ready_$\",function(){\n});\n</script>"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "supportDocumentWrite",
+                        "value": "false"
+                    }
+                ],
+                "fingerprint": "1540390347969",
+                "firingTriggerId": [
+                    "5",
+                    "6"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT"
+            },
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "tagId": "1",
+                "name": "Traffic Source Tracker Library",
+                "type": "html",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "html",
+                        "value": "<script>\n/*\n# Traffic Source Tracker - Google Analytics Last Non Direct Click Model\n# Copyright (c) 2015, MarketLytics\n# \n# This project is free software, distributed under the MIT license. \n# MarketLytics offers digital analytics consulting and integration services.\n*/\n(function (window, document){\n\twindow.dataLayer=window.dataLayer||[];\n\t//including javascript in web page when JSON is undifined(first time), creating json source attribute, appending in head tag.\n\tif(typeof JSON === 'undefined') {\n\t\tvar fileref = document.createElement('script');\n\t\tfileref.setAttribute('type', 'text/javascript');\n\t\tfileref.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/json2/20150503/json2.min.js');\n\t\tdocument.getElementsByTagName(\"head\")[0].appendChild(fileref);\n\t}\n\n\t//cookieStrKey is used to set cookie name.\n\tvar cookieStrKey = 'traffic_src';\n\t\n\t//inject global function for cookie retrieval.\n\twindow.getTrafficSrcCookie = function(){\n\t\tvar cookies = document.cookie.split(';');\n\t\tvar cookieObj;\n\t\tfor(var i = 0; i < cookies.length; i++) {\n\t\t\tif(cookies[i].indexOf(cookieStrKey) >= 0) {\n\t\t\t\tcookieObj = cookies[i];\n\t\t\t\tbreak;\n\t\t\t}\n\t\t}\n\t\t//cookie values are copied into cookieObj and return in JSON format.\n\t\tif(cookieObj)\n\t\t{\n\t\t\tcookieObj = cookieObj.substring(cookieObj.indexOf('=') + 1, cookieObj.length);\n\t\t\treturn JSON.parse(cookieObj);\n\t\t}\n\t\treturn null;\n\t};\n\n\tvar utils = {\n\t\t/*function is use to compare two parameters and return value if valid,\n\t\t *it looks for name(any variable) in url and returns its docoded value if found in url.\n\t\t*/\n\t\tgetParameterByName: function(url, name){\n\t\t\tname = name.replace(/[\\[]/, \"\\\\[\").replace(/[\\]]/, \"\\\\]\");\n\t\t\tvar regex = new RegExp(\"[\\\\?&]\" + name + \"=([^&#]*)\");\n\t\t\tvar results = regex.exec(url);\n\t\t\treturn results === null ? \"\" : decodeURIComponent(results[1].replace(/\\+/g, \" \"));\n\t\t},\n\n\t\tgetKeywords: function(url){\n\t\t\t//return empty sting if url is empty or direct, which indicate no keywords used.\n\t\t\tif(url === '' || url === '(direct)') return '';\n\t\t\t\n\t\t\t//we compare pre-define searchEngines object to find relavent keywords in url.\n\t\t\tvar searchEngines = 'daum:q eniro:search_word naver:query pchome:q images.google:q google:q yahoo:p yahoo:q msn:q bing:q aol:query aol:q lycos:q lycos:query ask:q cnn:query virgilio:qs baidu:wd baidu:word alice:qs yandex:text najdi:q seznam:q rakuten:qt biglobe:q goo.ne:MT search.smt.docomo:MT onet:qt onet:q kvasir:q terra:query rambler:query conduit:q babylon:q search-results:q avg:q comcast:q incredimail:q startsiden:q go.mail.ru:q centrum.cz:q 360.cn:q sogou:query tut.by:query globo:q ukr:q so.com:q haosou.com:q auone:q'.split(' ');\n\t\t\tfor(var i = 0; i < searchEngines.length; i++)\n\t\t\t{//set source of traffic to search engine\n\t\t\t\tvar val = searchEngines[i].split(':');\n\t\t\t\tvar name = val[0];\n\t\t\t\tvar queryParam = val[1];\n\t\t\t\tif(url.indexOf(name) >= 0) {\n\t\t\t\t\tcookieObj.ga_source = name; // set source to searchEngine name.\n\t\t\t\t\tif(this.getParameterByName(url, queryParam) !== ''){\n\t\t\t\t\t\t//return value of queryParamter, extracted keyowrd.\n\t\t\t\t\t\treturn this.getParameterByName(url, queryParam);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t\t//if url matches exact case of below regix we return not provided, which means campaign data is not present.\n\t\t\tvar google = new RegExp('^https?:\\/\\/(www\\.)?google(\\.com?)?(\\.[a-z]{2}t?)?\\/?$', 'i');\n\t\t\tvar yahoo = new RegExp('^https?:\\/\\/(r\\.)?search\\.yahoo\\.com\\/?[^?]*$', 'i');\n\t\t\tvar bing = new RegExp('^https?:\\/\\/(www\\.)?bing\\.com\\/?$', 'i');\n\t\t\tif(google.test(url) || yahoo.test(url) || bing.test(url)) {\n\t\t\t\treturn '(not provided)';\n\t\t\t}\n\t\t\t\n\t\t\treturn '';\n\t\t},\n\n\t\t//function to set medium based on different params.\n\t\tgetMedium: function(ccokieObj){\n\t\t\tif(cookieObj.ga_medium !== '') return cookieObj.ga_medium;\n\n\t\t\tif(cookieObj.ga_gclid !== '') return 'cpc';\n\n\t\t\tif(cookieObj.ga_source === '') return '';\n\n\t\t\tif(cookieObj.ga_source === '(direct)') return '(none)';\n\n\t\t\tif(cookieObj.ga_keyword !== '') return 'organic';\n\n\t\t\treturn 'referral';\n\t\t},\n\n\t\t//getting date and time for define number of years from today.\n\t\tgetDateAfterYears: function(years){\n\t\t\treturn new Date(new Date().getTime() + (years * 365 * 24 * 60 * 60 * 1000));\n\t\t},\n\n\t\t//checking url to return approprate hostname.\n\t\tgetHostname: function(url){\n\t\t\tvar re = new RegExp('^(https:\\/\\/|http:\\/\\/)?([^\\/?:#]+)');\n\t\t\tvar match = re.exec(url)[2];\n\t\t\tif(match !== null) {\n\t\t\t\treturn match;\n\t\t\t}\n\t\t\treturn '';\n\t\t},\n\n\t\t/*function that waits for the givent condition to be true,\n\t\t * Checks the condition every 100 milisecond till timeout variable is wqual to 0\n\t\t*/\n\t\twaitLoad: function(condition, callback) {\n\t\t\tvar timeout = 100;\n\t\t\tvar poll = function() {\n\t\t\t\tsetTimeout(function() {\n\t\t\t\t\ttimeout--;\n\t\t\t\t\tif(condition()) {\n\t\t\t\t\t\tcallback();\n\t\t\t\t\t} else if (timeout > 0) {\n\t\t\t\t\t\tpoll();\n\t\t\t\t\t} else {\n\t\t\t\t\t\tconsole.error('timed-out!!');\n\t\t\t\t\t}\n\t\t\t\t}, 100);\n\t\t\t};\n\t\t\tpoll();\n\t\t},\n\n\t\tremoveSubdomain : function (host) {\n\t\t\tvar firstTLDs  = \"ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|be|bf|bg|bh|bi|bj|bm|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|cl|cm|cn|co|cr|cu|cv|cw|cx|cz|de|dj|dk|dm|do|dz|ec|ee|eg|es|et|eu|fi|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|im|in|io|iq|ir|is|it|je|jo|jp|kg|ki|km|kn|kp|kr|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|na|nc|ne|nf|ng|nl|no|nr|nu|nz|om|pa|pe|pf|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|yt\".split('|');\n\t\t\tvar secondTLDs = \"com|edu|gov|net|mil|org|nom|sch|caa|res|off|gob|int|tur|ip6|uri|urn|asn|act|nsw|qld|tas|vic|pro|biz|adm|adv|agr|arq|art|ato|bio|bmd|cim|cng|cnt|ecn|eco|emp|eng|esp|etc|eti|far|fnd|fot|fst|g12|ggf|imb|ind|inf|jor|jus|leg|lel|mat|med|mus|not|ntr|odo|ppg|psc|psi|qsl|rec|slg|srv|teo|tmp|trd|vet|zlg|web|ltd|sld|pol|fin|k12|lib|pri|aip|fie|eun|sci|prd|cci|pvt|mod|idv|rel|sex|gen|nic|abr|bas|cal|cam|emr|fvg|laz|lig|lom|mar|mol|pmn|pug|sar|sic|taa|tos|umb|vao|vda|ven|mie|北海道|和歌山|神奈川|鹿児島|ass|rep|tra|per|ngo|soc|grp|plc|its|air|and|bus|can|ddr|jfk|mad|nrw|nyc|ski|spy|tcm|ulm|usa|war|fhs|vgs|dep|eid|fet|fla|flå|gol|hof|hol|sel|vik|cri|iwi|ing|abo|fam|gok|gon|gop|gos|aid|atm|gsm|sos|elk|waw|est|aca|bar|cpa|jur|law|sec|plo|www|bir|cbg|jar|khv|msk|nov|nsk|ptz|rnd|spb|stv|tom|tsk|udm|vrn|cmw|kms|nkz|snz|pub|fhv|red|ens|nat|rns|rnu|bbs|tel|bel|kep|nhs|dni|fed|isa|nsn|gub|e12|tec|орг|обр|упр|alt|nis|jpn|mex|ath|iki|nid|gda|inc\".split('|');\n\t\t\thost = host.replace(/^www\\./, '');\n\t\t\tvar parts = host.split('.');\n\t\t\twhile (parts.length > 3) {\n\t\t\t\tparts.shift();\n\t\t\t}\n\t\t\tif (parts.length === 3 && ((parts[1].length > 2 && parts[2].length > 2) || (secondTLDs.indexOf(parts[1]) === -1) && firstTLDs.indexOf(parts[2]) === -1)) {\n\t\t\t\tparts.shift();\n\t\t\t}\n\t\t\treturn parts.join('.');\n\t\t}\n\t};\n\n\t// query params keys to look for to get utm data.\n\tvar parameters = [{\n\t\tkey: 'utm_source',\n\t\tlabel: 'ga_source',\n\t\trequired:  true\n\t}, {\n\t\tkey: 'utm_medium',\n\t\tlabel: 'ga_medium',\n\t\trequired: false\n\t}, {\n\t\tkey: 'utm_campaign',\n\t\tlabel: 'ga_campaign',\n\t\trequired: false\n\t}, {\n\t\tkey: 'utm_content',\n\t\tlabel: 'ga_content',\n\t\trequired: false\n\t}, {\n\t\tkey: 'utm_term',\n\t\tlabel: 'ga_keyword',\n\t\trequired: false\n\t}];\n\n\t//code starts from here, above declare functions are used here.\n\tvar cookieObj = {};\n\n\t/* gclid = checks for presensce of adword.\n\t * function below sets all the required values (traffic detials) in an object name 'cookiObj',\n\t * which is later converted to JSON and saved as cookie,\n\t * function is used to save values in cookie defined above.\n\t */\n\t\n\tvar setCookie = function(getGaClient){\n\t\tcookieObj.ga_gclid = utils.getParameterByName(document.location.href, 'gclid');\n\n\t\tvar ignoreUtmParameters = false;\n\t\tfor(var i = 0; i < parameters.length; i++) {\n\t\t\tvar value = utils.getParameterByName(document.location.href, parameters[i].key);\n\t\t\tif(parameters[i].required && value === '') {\n\t\t\t\tignoreUtmParameters = true;\n\t\t\t\tfor(var j = 0; j < parameters.length; j++) {\n\t\t\t\t\tcookieObj[parameters[j]['label']] = '';\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\t}\n\t\t\tcookieObj[parameters[i]['label']] = value;\n\t\t}\n\n\t\t//source is assumed to be google when gclid is present and source is NULL\n\t\tif (cookieObj.ga_gclid !== '' && cookieObj.ga_source === ''){\n\t\t\tcookieObj.ga_source = 'google';\n\t\t} \n\t\t//Checks if ignoreUtmParameters is true.\n\t\telse if(ignoreUtmParameters){\n\t\t\t//Checks is referrer exists.\n\t\t\tif(document.referrer.indexOf(document.location.host) >= 0) return;\n\t\t\t\n\t\t\t//Checks is Cookie already exists and also checks if referrer exists.\n\t\t\tif(getTrafficSrcCookie() !== null && document.referrer === '') return;\n\t\t\t//Set the default source value '(direct)'.\n\t\t\tcookieObj.ga_source = document.referrer !== '' ? document.referrer : '(direct)';\n\t\t}\n\t\t\n\t\t//Saves values in cookie object i.e 'cookieObj'.\n\t\tcookieObj.ga_keyword = cookieObj.ga_keyword === '' ? utils.getKeywords(cookieObj.ga_source) : cookieObj.ga_keyword;\n\t\tcookieObj.ga_medium = utils.getMedium(cookieObj);\n\t\t//landing page is set to current page url.\n\t\tcookieObj.ga_landing_page = document.location.href;\n\t\tcookieObj.ga_source = utils.getHostname(cookieObj.ga_source);\n\n\t\tif (getGaClient) {\n\t\t\tcookieObj.ga_client_id = ga.getAll()[0].get('clientId');\n\t\t}\n\n\t\tif(cookieObj.ga_source !== '') {\n\t\t\t//coverting Javascript value under cookieObj to JSON String, cookieStr varaible is used to save data in cookie.\n\t\t\tvar cookieStr = JSON.stringify(cookieObj);\n\t\t\t//Creating cookie with expiry set for one year, can be accessed by function getTrafficSrcCookie().\n\t\t\tdocument.cookie = cookieStrKey + '=; expires=' + new Date(-1);\n\t\t\tdocument.cookie = cookieStrKey + '=' + cookieStr + '; expires=' + utils.getDateAfterYears(1) + '; path=/; domain=' + utils.removeSubdomain(location.hostname);\n\t\t}\n\t\t//Pushes event to dataLayer to prompt that cookies have been saved successfully.\n\t\tdataLayer.push({'event':'trafficSrcCookieSet'})\n\t\t// Creates an event in jQuery on script ready.\n\t\tif(jQuery){\n\t\t\tjQuery.event.trigger({\n\t\t\t\ttype: \"Traffic_Source_Ready_jQuery\",\n\t\t\t\tmessage: \"Traffic Source Ready\",\n\t\t\t\tcookieData:getTrafficSrcCookie(),\n\t\t\t\ttime: new Date()\n\t\t\t});\n\t\t}\n\t\tif($){\n\t\t\t$.event.trigger({\n\t\t\t\ttype: \"Traffic_Source_Ready_$\",\n\t\t\t\tmessage: \"Traffic Source Ready\",\n\t\t\t\tcookieData:getTrafficSrcCookie(),\n\t\t\t\ttime: new Date()\n\t\t\t});\n\t\t}\n\n\t\t// Create the event\n\t\tvar event = new CustomEvent(\"Traffic_Source_Ready_Dom\", {\n\t\t\ttype: \"Traffic_Source_Ready\",\n\t\t\tmessage: \"Traffic Source Ready\",\n\t\t\tcookieData:getTrafficSrcCookie(),\n\t\t\ttime: new Date()\n\t\t});\n\n\t\t// Dispatch/Trigger/Fire the event\n\t\tdocument.dispatchEvent(event);\n\n\t\tcookieObj = {};\n\t};\n\n\tvar setTrafficSrcCookie = function(options) {\n\t\tif (!options) {\n\t\t\toptions = {};\n\t\t}\n\n\t\tutils.waitLoad(function() {\n\t\t\t//Checks if JSON Lib is included.\n\t\t\treturn typeof JSON !== 'undefined';\n\t\t}, function() {\n\t\t\tif (options.getGaClient) {\n\t\t\t\t//works when Analytics tracker(ga) exists on site, wait for some type before returing ga values and calling function setcookie.\n\t\t\t\tutils.waitLoad(function() {\n\t\t\t\t\treturn typeof ga.getAll !== 'undefined';\n\t\t\t\t}, function() {\n\t\t\t\t\tsetCookie(true);\n\t\t\t\t});\n\t\t\t\treturn;\n\t\t\t}\n\t\t\tsetCookie(false);\n\n\t\t});\n\t}\n\t\n\twindow.trafficSrcCookie = {\n\t\tsetCookie: setTrafficSrcCookie,\n\t\tgetCookie: getTrafficSrcCookie\n\t};\n})(window, document);\n</script>"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "supportDocumentWrite",
+                        "value": "false"
+                    }
+                ],
+                "fingerprint": "1540390870257",
+                "firingTriggerId": [
+                    "2147479553"
+                ],
+                "tagFiringOption": "ONCE_PER_LOAD"
+            }
+        ],
+        "trigger": [
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "triggerId": "5",
+                "name": "Dom Ready - All Pages",
+                "type": "DOM_READY",
+                "fingerprint": "1540390288643"
+            },
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "triggerId": "6",
+                "name": "Dom Ready - Referrer Does not Contain Self Domain",
+                "type": "DOM_READY",
+                "filter": [
+                    {
+                        "type": "MATCH_REGEX",
+                        "parameter": [
+                            {
+                                "type": "TEMPLATE",
+                                "key": "arg0",
+                                "value": "{{Referrer}}"
+                            },
+                            {
+                                "type": "TEMPLATE",
+                                "key": "arg1",
+                                "value": "marketlytics.com"
+                            },
+                            {
+                                "type": "BOOLEAN",
+                                "key": "ignore_case",
+                                "value": "true"
+                            },
+                            {
+                                "type": "BOOLEAN",
+                                "key": "negate",
+                                "value": "true"
+                            }
+                        ]
+                    }
+                ],
+                "fingerprint": "1540390342688"
+            }
+        ],
+        "variable": [
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "variableId": "1",
+                "name": "Traffic Source Cookie",
+                "type": "k",
+                "parameter": [
+                    {
+                        "type": "BOOLEAN",
+                        "key": "decodeCookie",
+                        "value": "false"
+                    },
+                    {
+                        "type": "TEMPLATE",
+                        "key": "name",
+                        "value": "traffic_src"
+                    }
+                ],
+                "fingerprint": "1540390942201",
+                "formatValue": {}
+            }
+        ],
+        "builtInVariable": [
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "type": "PAGE_URL",
+                "name": "Page URL"
+            },
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "type": "PAGE_HOSTNAME",
+                "name": "Page Hostname"
+            },
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "type": "PAGE_PATH",
+                "name": "Page Path"
+            },
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "type": "REFERRER",
+                "name": "Referrer"
+            },
+            {
+                "accountId": "152155806",
+                "containerId": "10246515",
+                "type": "EVENT",
+                "name": "Event"
+            }
+        ],
+        "fingerprint": "0",
+        "tagManagerUrl": "https://tagmanager.google.com/#/versions/accounts/152155806/containers/10246515/versions/0?apiLink=version"
+    }
+}
